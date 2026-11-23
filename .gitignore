@@ -35,8 +35,6 @@ pnpm-debug.log*
 *.log
 
 # Local tool settings (may contain personal or machine-specific data)
-.claude/
-.claude/settings.local.json
 .vercel
 .idea/
 .vscode/*
