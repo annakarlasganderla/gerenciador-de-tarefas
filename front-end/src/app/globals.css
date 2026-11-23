@@ -1,0 +1,26 @@
+/*
+ * Global styles.
+ *
+ * The UI is built with Material UI components and theme (src/theme). This
+ * file only holds the task status colors, shared by the status chip, the
+ * status select and the task details dialog.
+ */
+
+:root {
+  /* Status colors, checked for color-vision deficiencies. */
+  --status-not-started: #2a78d6;
+  --status-in-progress: #eb6834;
+  --status-done: #1baf7a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --status-not-started: #3987e5;
+    --status-in-progress: #d95926;
+    --status-done: #199e70;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

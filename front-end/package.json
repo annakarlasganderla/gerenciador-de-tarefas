@@ -1,0 +1,39 @@
+{
+  "name": "@task-manager/front-end",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Task manager Next.js UI (pages, components and tRPC client).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.6.0",
+    "@mui/material": "^9.6.0",
+    "@mui/material-nextjs": "^9.6.0",
+    "@tanstack/react-query": "^5.108.4",
+    "@task-manager/back-end": "*",
+    "@trpc/client": "^11.29.9",
+    "@trpc/server": "^11.29.9",
+    "@trpc/tanstack-react-query": "^11.29.9",
+    "next": "^15.5.29",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "server-only": "^0.0.1",
+    "superjson": "^2.2.7",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^5.9.3"
+  }
+}
