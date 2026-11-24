@@ -15,19 +15,22 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 import { StatusSelect } from "@/components/status-select";
 import { useToast } from "@/components/toast";
+import { useErrorMessage } from "@/i18n/use-error-message";
 import { useTRPC } from "@/trpc/client";
 
 type FieldErrors = { title?: string; description?: string };
 
 /**
  * A single form to create (without `task`) or edit (with `task`) a task.
- * Local state with useState; validation uses the SAME Zod schema as the back-end.
+ * Local state with useState; validation uses the SAME Zod schema as the back-end
+ * (its English messages are translated with `useErrorMessage`).
  */
 export function TaskFormView({ task }: { task?: Task }) {
   const isEditing = Boolean(task);
@@ -35,6 +38,9 @@ export function TaskFormView({ task }: { task?: Task }) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const toast = useToast();
+  const t = useTranslations("taskForm");
+  const tCommon = useTranslations("common");
+  const errorMessage = useErrorMessage();
 
   const [title, setTitle] = useState(task?.title ?? "");
   const [description, setDescription] = useState(task?.description ?? "");
@@ -47,24 +53,32 @@ export function TaskFormView({ task }: { task?: Task }) {
     onSuccess: async (saved: Task) => {
       // Invalidate the list so it reflects the change when the user goes back.
       await queryClient.invalidateQueries(trpc.task.pathFilter());
-      toast.success(isEditing ? `Task "${saved.title}" updated.` : `Task "${saved.title}" created.`);
+      toast.success(t(isEditing ? "updated" : "created", { title: saved.title }));
       router.push("/");
     },
     onError: (error: {
       message: string;
-      data?: { zodError: { fieldErrors: Record<string, string[] | undefined> } | null } | null;
+      data?: {
+        code?: string;
+        zodError: { formErrors: string[]; fieldErrors: Record<string, string[] | undefined> } | null;
+      } | null;
     }) => {
-      // Validation errors coming from the back-end are shown next to the matching field.
+      // Validation errors coming from the back-end are shown (translated) next to the matching field.
       const fieldErrors = error.data?.zodError?.fieldErrors;
       if (fieldErrors && Object.keys(fieldErrors).length > 0) {
-        setErrors({ title: fieldErrors.title?.[0], description: fieldErrors.description?.[0] });
-        setFormError("Please fix the highlighted fields.");
+        setErrors({ title: translate(fieldErrors.title?.[0]), description: translate(fieldErrors.description?.[0]) });
+        setFormError(t("fixHighlightedFields"));
       } else {
-        setFormError(error.message);
+        setFormError(errorMessage.api(error));
       }
-      toast.error(`Failed to save: ${error.message}`);
+      toast.error(t("saveFailed", { message: errorMessage.api(error) }));
     },
   };
+
+  /** Translates an optional validation message. */
+  function translate(message: string | undefined) {
+    return message === undefined ? undefined : errorMessage.validation(message);
+  }
 
   const createTask = useMutation(trpc.task.create.mutationOptions(callbacks));
   const updateTask = useMutation(trpc.task.update.mutationOptions(callbacks));
@@ -72,7 +86,7 @@ export function TaskFormView({ task }: { task?: Task }) {
 
   function validateField(field: keyof FieldErrors, value: string) {
     const result = createTaskSchema.shape[field].safeParse(value);
-    setErrors((current) => ({ ...current, [field]: result.success ? undefined : result.error.issues[0]?.message }));
+    setErrors((current) => ({ ...current, [field]: result.success ? undefined : translate(result.error.issues[0]?.message) }));
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -83,7 +97,7 @@ export function TaskFormView({ task }: { task?: Task }) {
     const result = createTaskSchema.safeParse({ title, description, status });
     if (!result.success) {
       const { fieldErrors } = z.flattenError(result.error);
-      setErrors({ title: fieldErrors.title?.[0], description: fieldErrors.description?.[0] });
+      setErrors({ title: translate(fieldErrors.title?.[0]), description: translate(fieldErrors.description?.[0]) });
       return;
     }
     setErrors({});
@@ -114,14 +128,14 @@ export function TaskFormView({ task }: { task?: Task }) {
         <TextField
           id="title"
           name="title"
-          label="Title"
+          label={t("titleLabel")}
           required
           autoFocus
           fullWidth
           value={title}
           disabled={isSaving}
           error={Boolean(errors.title)}
-          placeholder="E.g.: Review pull request"
+          placeholder={t("titlePlaceholder")}
           helperText={helper(errors.title, title.length, TITLE_MAX_LENGTH)}
           slotProps={{ htmlInput: { maxLength: TITLE_MAX_LENGTH } }}
           onChange={(event) => {
@@ -134,14 +148,14 @@ export function TaskFormView({ task }: { task?: Task }) {
         <TextField
           id="description"
           name="description"
-          label="Description (optional)"
+          label={t("descriptionLabel")}
           multiline
           minRows={5}
           fullWidth
           value={description}
           disabled={isSaving}
           error={Boolean(errors.description)}
-          placeholder="Task details"
+          placeholder={t("descriptionPlaceholder")}
           helperText={helper(errors.description, description.length, DESCRIPTION_MAX_LENGTH)}
           slotProps={{ htmlInput: { maxLength: DESCRIPTION_MAX_LENGTH } }}
           onChange={(event) => {
@@ -150,11 +164,11 @@ export function TaskFormView({ task }: { task?: Task }) {
           }}
         />
 
-        <StatusSelect id="status" label="Status" value={status} onChange={setStatus} disabled={isSaving} fullWidth />
+        <StatusSelect id="status" label={t("statusLabel")} value={status} onChange={setStatus} disabled={isSaving} fullWidth />
 
         <Stack direction="row" spacing={1} sx={{ justifyContent: "flex-end" }}>
           <Button component={Link} href="/" disabled={isSaving}>
-            Cancel
+            {tCommon("cancel")}
           </Button>
           <Button
             type="submit"
@@ -163,7 +177,7 @@ export function TaskFormView({ task }: { task?: Task }) {
             loadingPosition="start"
             startIcon={<SaveOutlinedIcon />}
           >
-            {isSaving ? "Saving…" : isEditing ? "Save changes" : "Create task"}
+            {isSaving ? tCommon("saving") : isEditing ? t("save") : t("create")}
           </Button>
         </Stack>
       </Stack>

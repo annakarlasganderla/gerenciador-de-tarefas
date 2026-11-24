@@ -1,17 +1,22 @@
 /**
- * Formats a task's creation date.
- * The locale and time zone are fixed so the HTML rendered on the server (SSR)
- * and in the browser are identical — avoiding hydration mismatches when the
- * server and the user are in different time zones.
+ * Formats a task's creation date in the user's language.
+ * The time zone is fixed (and the locale comes from the request) so the HTML
+ * rendered on the server (SSR) and in the browser are identical — avoiding
+ * hydration mismatches when the server and the user are in different time zones.
  */
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "medium",
-  timeStyle: "short",
-  timeZone: "America/Sao_Paulo",
-});
+const formatters = new Map<string, Intl.DateTimeFormat>();
 
-export function formatDate(date: Date) {
-  return dateFormatter.format(date);
+export function formatDate(date: Date, locale = "en-US") {
+  let formatter = formatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "America/Sao_Paulo",
+    });
+    formatters.set(locale, formatter);
+  }
+  return formatter.format(date);
 }
 
 /** Maximum number of description characters shown on the task list. */

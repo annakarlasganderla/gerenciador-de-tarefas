@@ -1,5 +1,6 @@
 import { PAGE_SIZE } from "@task-manager/back-end/schemas";
 import Typography from "@mui/material/Typography";
+import { getTranslations } from "next-intl/server";
 import { HydrateClient, getQueryClient, trpc } from "@/trpc/server";
 import { TaskListView } from "@/views/task-list/task-list-view";
 
@@ -10,6 +11,8 @@ import { TaskListView } from "@/views/task-list/task-list-view";
 export const dynamic = "force-dynamic";
 
 export default async function TaskListPage() {
+  const t = await getTranslations("taskList");
+
   // SSR: the first page of tasks is fetched on the server and sent already
   // hydrated into the React Query cache. The HTML arrives with the list ready,
   // and the client component takes over from there (infinite scroll, deletion…).
@@ -22,7 +25,7 @@ export default async function TaskListPage() {
 
   return (
     <HydrateClient>
-      <Typography variant="h1">My tasks</Typography>
+      <Typography variant="h1">{t("title")}</Typography>
       <TaskListView />
     </HydrateClient>
   );

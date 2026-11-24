@@ -24,6 +24,7 @@
     "@trpc/server": "^11.29.9",
     "@trpc/tanstack-react-query": "^11.29.9",
     "next": "^15.5.29",
+    "next-intl": "^4.16.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "server-only": "^0.0.1",

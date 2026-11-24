@@ -2,6 +2,7 @@
 
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import { useTranslations } from "next-intl";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 /**
@@ -25,6 +26,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [queue, setQueue] = useState<Toast[]>([]);
   const [open, setOpen] = useState(true);
   const current = queue[0];
+  const t = useTranslations("common");
 
   const show = useCallback((kind: ToastKind, message: string) => {
     setQueue((items) => [...items, { id: nextId++, kind, message }]);
@@ -62,6 +64,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             variant="filled"
             role={current.kind === "error" ? "alert" : "status"}
             onClose={() => setOpen(false)}
+            closeText={t("closeNotification")}
             sx={{ width: "100%", maxWidth: 420 }}
           >
             {current.message}

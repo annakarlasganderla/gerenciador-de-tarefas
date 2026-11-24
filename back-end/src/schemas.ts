@@ -12,27 +12,40 @@ import { z } from "zod";
 export const TITLE_MAX_LENGTH = 100;
 export const DESCRIPTION_MAX_LENGTH = 500;
 
+/**
+ * Validation messages, in English (the API language). They are exported so the
+ * front-end can recognize each one and show its translation in the user's language.
+ */
+export const VALIDATION_MESSAGES = {
+  titleRequired: "Title is required.",
+  titleTooLong: `Title must be at most ${TITLE_MAX_LENGTH} characters.`,
+  descriptionTooLong: `Description must be at most ${DESCRIPTION_MAX_LENGTH} characters.`,
+  invalidId: "Invalid task id.",
+  invalidStatus: "Invalid status.",
+} as const;
+export type ValidationMessageKey = keyof typeof VALIDATION_MESSAGES;
+
 export const titleSchema = z
-  .string({ error: "Title is required." })
+  .string({ error: VALIDATION_MESSAGES.titleRequired })
   .trim()
-  .min(1, { error: "Title is required." })
-  .max(TITLE_MAX_LENGTH, { error: `Title must be at most ${TITLE_MAX_LENGTH} characters.` });
+  .min(1, { error: VALIDATION_MESSAGES.titleRequired })
+  .max(TITLE_MAX_LENGTH, { error: VALIDATION_MESSAGES.titleTooLong });
 
 export const descriptionSchema = z
   .string()
   .trim()
-  .max(DESCRIPTION_MAX_LENGTH, { error: `Description must be at most ${DESCRIPTION_MAX_LENGTH} characters.` })
+  .max(DESCRIPTION_MAX_LENGTH, { error: VALIDATION_MESSAGES.descriptionTooLong })
   .optional()
   // An empty string becomes `undefined`, so "no description" has a single representation.
   .transform((value) => (value ? value : undefined));
 
-export const idSchema = z.uuid({ error: "Invalid task id." });
+export const idSchema = z.uuid({ error: VALIDATION_MESSAGES.invalidId });
 
 /** Possible task statuses (stable identifiers; display labels live in the front-end). */
 export const TASK_STATUSES = ["not_started", "in_progress", "done"] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
 
-export const statusSchema = z.enum(TASK_STATUSES, { error: "Invalid status." });
+export const statusSchema = z.enum(TASK_STATUSES, { error: VALIDATION_MESSAGES.invalidStatus });
 
 export const createTaskSchema = z.object({
   title: titleSchema,

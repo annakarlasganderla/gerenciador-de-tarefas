@@ -18,6 +18,7 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -25,8 +26,8 @@ import { ErrorState, LoadingState } from "@/components/feedback";
 import { StatusMenu } from "@/components/status-menu";
 import { TaskDetailsModal } from "@/components/task-details-modal";
 import { useToast } from "@/components/toast";
+import { useErrorMessage } from "@/i18n/use-error-message";
 import { formatDate, truncate } from "@/lib/format";
-import { TASK_STATUS_LABELS } from "@/lib/task-status";
 import { useTRPC } from "@/trpc/client";
 
 /** Task list screen: infinite scroll, status changes and deletion. */
@@ -34,6 +35,11 @@ export function TaskListView() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const t = useTranslations("taskList");
+  const tCommon = useTranslations("common");
+  const tStatus = useTranslations("status");
+  const locale = useLocale();
+  const errorMessage = useErrorMessage();
   /** Task waiting for delete confirmation (null = dialog closed). */
   const [taskToDelete, setTaskToDelete] = useState<{ id: string; title: string } | null>(null);
   /** Task shown in full in the details dialog (null = closed). */
@@ -70,11 +76,11 @@ export function TaskListView() {
         return { previous };
       },
       onSuccess: (task) => {
-        toast.success(`"${task.title}" marked as ${TASK_STATUS_LABELS[task.status].toLowerCase()}.`);
+        toast.success(t("statusChanged", { title: task.title, status: tStatus(task.status).toLocaleLowerCase(locale) }));
       },
       onError: (error, _variables, context) => {
         if (context?.previous) queryClient.setQueryData(listOptions.queryKey, context.previous);
-        toast.error(`Couldn't change the status: ${error.message}`);
+        toast.error(t("statusChangeFailed", { message: errorMessage.api(error) }));
       },
       onSettled: () => queryClient.invalidateQueries(trpc.task.pathFilter()),
     }),
@@ -83,10 +89,10 @@ export function TaskListView() {
   const deleteTask = useMutation(
     trpc.task.delete.mutationOptions({
       onSuccess: (task) => {
-        toast.success(`Task "${task.title}" deleted.`);
+        toast.success(t("deleted", { title: task.title }));
       },
       onError: (error) => {
-        toast.error(`Couldn't delete the task: ${error.message}`);
+        toast.error(t("deleteFailed", { message: errorMessage.api(error) }));
       },
       // On success OR error (e.g. already deleted in another tab), close the dialog and resync the list.
       onSettled: () => {
@@ -115,10 +121,10 @@ export function TaskListView() {
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (query.isPending) return <LoadingState label="Loading tasks…" />;
+  if (query.isPending) return <LoadingState label={t("loading")} />;
 
   if (query.isError) {
-    return <ErrorState message={`Error loading tasks: ${query.error.message}`} onRetry={() => query.refetch()} />;
+    return <ErrorState message={t("loadError", { message: errorMessage.api(query.error) })} onRetry={() => query.refetch()} />;
   }
 
   const tasks = query.data.pages.flatMap((page) => page.items);
@@ -128,10 +134,10 @@ export function TaskListView() {
     return (
       <Paper sx={{ p: 4, textAlign: "center" }}>
         <Typography color="text.secondary" sx={{ mb: 2 }}>
-          No tasks yet.
+          {t("empty")}
         </Typography>
         <Button component={Link} href="/tasks/new" variant="contained" startIcon={<AddIcon />}>
-          Create your first task
+          {t("createFirst")}
         </Button>
       </Paper>
     );
@@ -140,8 +146,8 @@ export function TaskListView() {
   return (
     <>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-        Showing {tasks.length} of {total} {total === 1 ? "task" : "tasks"}
-        {query.isRefetching && !isFetchingNextPage && " · refreshing…"}
+        {t("counter", { shown: tasks.length, total })}
+        {query.isRefetching && !isFetchingNextPage && t("refreshing")}
       </Typography>
 
       <Stack component="ul" spacing={1.5} sx={{ listStyle: "none", m: 0, p: 0 }}>
@@ -200,17 +206,17 @@ export function TaskListView() {
                   </Typography>
                 ) : (
                   <Typography variant="body2" sx={{ color: "text.disabled", fontStyle: "italic" }}>
-                    No description
+                    {tCommon("noDescription")}
                   </Typography>
                 )}
                 {summary?.truncated && (
                   <Button
                     size="small"
                     onClick={() => setOpenTask(task)}
-                    aria-label={`View full task: ${task.title}`}
+                    aria-label={t("viewFullAria", { title: task.title })}
                     sx={{ px: 0.5, mt: 0.5, ml: -0.5 }}
                   >
-                    View full task
+                    {t("viewFull")}
                   </Button>
                 )}
               </CardContent>
@@ -226,7 +232,7 @@ export function TaskListView() {
                   sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                 >
                   <ScheduleIcon sx={{ fontSize: 16 }} aria-hidden />
-                  Created {formatDate(task.createdAt)}
+                  {tCommon("createdAt", { date: formatDate(task.createdAt, locale) })}
                 </Typography>
 
                 <Box sx={{ display: "flex", gap: 0.5 }}>
@@ -237,22 +243,22 @@ export function TaskListView() {
                     - MUI Tooltip: shown on hover AND keyboard focus, closes with Esc
                       and stays visible while the pointer is over it.
                   */}
-                  <Tooltip title="Edit">
+                  <Tooltip title={tCommon("edit")}>
                     <IconButton
                       size="small"
                       component={Link}
                       href={`/tasks/${task.id}/edit`}
-                      aria-label={`Edit task: ${task.title}`}
+                      aria-label={t("editAria", { title: task.title })}
                     >
                       <EditOutlinedIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title={isDeleting ? "Deleting…" : "Delete"}>
+                  <Tooltip title={isDeleting ? tCommon("deleting") : tCommon("delete")}>
                     {/* aria-disabled (not disabled) keeps the button focusable and the tooltip working. */}
                     <IconButton
                       size="small"
                       color="error"
-                      aria-label={isDeleting ? `Deleting task: ${task.title}` : `Delete task: ${task.title}`}
+                      aria-label={t(isDeleting ? "deletingAria" : "deleteAria", { title: task.title })}
                       aria-disabled={isDeleting}
                       aria-busy={isDeleting}
                       onClick={() => {
@@ -275,32 +281,31 @@ export function TaskListView() {
 
       <Box ref={sentinelRef} sx={{ display: "flex", justifyContent: "center", py: 3 }}>
         {isFetchingNextPage ? (
-          <LoadingState label="Loading more tasks…" />
+          <LoadingState label={t("loadingMore")} />
         ) : hasNextPage ? (
           // Accessible fallback in case the IntersectionObserver does not fire.
           <Button variant="outlined" onClick={() => fetchNextPage()}>
-            Load more
+            {t("loadMore")}
           </Button>
         ) : (
           <Typography variant="body2" color="text.secondary">
-            You&apos;ve reached the end of the list.
+            {t("endOfList")}
           </Typography>
         )}
       </Box>
 
       <ConfirmDialog
         open={taskToDelete !== null}
-        title="Delete task?"
-        message={
-          <>
-            The task{" "}
+        title={t("deleteDialogTitle")}
+        message={t.rich("deleteDialogMessage", {
+          title: taskToDelete?.title ?? "",
+          strong: (chunks) => (
             <Box component="strong" sx={{ color: "text.primary" }}>
-              &ldquo;{taskToDelete?.title}&rdquo;
-            </Box>{" "}
-            will be permanently removed. This action can&apos;t be undone.
-          </>
-        }
-        confirmLabel="Delete"
+              {chunks}
+            </Box>
+          ),
+        })}
+        confirmLabel={tCommon("delete")}
         danger
         loading={deleteTask.isPending}
         onConfirm={() => taskToDelete && deleteTask.mutate({ id: taskToDelete.id })}

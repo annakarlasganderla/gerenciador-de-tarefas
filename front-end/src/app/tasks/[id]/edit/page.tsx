@@ -1,12 +1,17 @@
 import Typography from "@mui/material/Typography";
 import { TRPCError } from "@trpc/server";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { caller } from "@/trpc/server";
 import { TaskFormView } from "@/views/task-form/task-form-view";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Edit task · Task Manager" };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("metadata");
+  return { title: t("editTask") };
+}
 
 /**
  * The task is loaded on the server (SSR), so the form opens already filled in.
@@ -14,6 +19,7 @@ export const metadata: Metadata = { title: "Edit task · Task Manager" };
  */
 export default async function EditTaskPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const t = await getTranslations("metadata");
 
   let task;
   try {
@@ -27,7 +33,7 @@ export default async function EditTaskPage({ params }: { params: Promise<{ id: s
 
   return (
     <>
-      <Typography variant="h1">Edit task</Typography>
+      <Typography variant="h1">{t("editTask")}</Typography>
       <TaskFormView task={task} />
     </>
   );

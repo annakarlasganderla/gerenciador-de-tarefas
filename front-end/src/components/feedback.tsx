@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
+import { useTranslations } from "next-intl";
 
 /** Centered loading state (spinner + text, announced to screen readers). */
 export function LoadingState({ label }: { label: string }) {
@@ -18,13 +19,14 @@ export function LoadingState({ label }: { label: string }) {
 
 /** Error state with a "try again" button. */
 export function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const t = useTranslations("common");
   return (
     <Alert
       severity="error"
       sx={{ my: 2 }}
       action={
         <Button color="inherit" size="small" onClick={onRetry}>
-          Try again
+          {t("retry")}
         </Button>
       }
     >

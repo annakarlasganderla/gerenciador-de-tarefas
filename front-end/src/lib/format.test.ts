@@ -31,4 +31,8 @@ describe("formatDate", () => {
     // 2026-11-23 15:05 UTC = 12:05 in São Paulo (UTC-3).
     expect(formatDate(new Date("2026-11-23T15:05:00Z"))).toBe("Nov 23, 2026, 12:05 PM");
   });
+
+  it("formats in the user's language", () => {
+    expect(formatDate(new Date("2026-11-23T15:05:00Z"), "pt-BR")).toBe("23 de nov. de 2026, 12:05");
+  });
 });

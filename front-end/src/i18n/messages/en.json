@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "appName": "Task Manager",
+    "description": "Technical challenge: Next.js 15 + tRPC with in-memory storage.",
+    "newTask": "New task",
+    "editTask": "Edit task"
+  },
+  "header": {
+    "brand": "Task Manager",
+    "home": "Task Manager — go to the task list",
+    "newTask": "New task",
+    "language": "Language: {language}"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "retry": "Try again",
+    "loading": "Loading…",
+    "pleaseWait": "Please wait…",
+    "saving": "Saving…",
+    "noDescription": "No description",
+    "createdAt": "Created {date}",
+    "closeNotification": "Close notification"
+  },
+  "status": {
+    "not_started": "Not started",
+    "in_progress": "In progress",
+    "done": "Done",
+    "changeAria": "{status} — change status of task {title}"
+  },
+  "errors": {
+    "titleRequired": "Title is required.",
+    "titleTooLong": "Title must be at most {max} characters.",
+    "descriptionTooLong": "Description must be at most {max} characters.",
+    "invalidId": "Invalid task id.",
+    "invalidStatus": "Invalid status.",
+    "taskNotFound": "Task not found. It may have been deleted.",
+    "unexpected": "Unexpected error.",
+    "somethingWentWrong": "Something went wrong"
+  },
+  "taskList": {
+    "title": "My tasks",
+    "loading": "Loading tasks…",
+    "loadError": "Error loading tasks: {message}",
+    "empty": "No tasks yet.",
+    "createFirst": "Create your first task",
+    "counter": "Showing {shown} of {total, plural, one {# task} other {# tasks}}",
+    "refreshing": " · refreshing…",
+    "viewFull": "View full task",
+    "viewFullAria": "View full task: {title}",
+    "editAria": "Edit task: {title}",
+    "deleteAria": "Delete task: {title}",
+    "deletingAria": "Deleting task: {title}",
+    "loadingMore": "Loading more tasks…",
+    "loadMore": "Load more",
+    "endOfList": "You've reached the end of the list.",
+    "statusChanged": "\"{title}\" marked as {status}.",
+    "statusChangeFailed": "Couldn't change the status: {message}",
+    "deleted": "Task \"{title}\" deleted.",
+    "deleteFailed": "Couldn't delete the task: {message}",
+    "deleteDialogTitle": "Delete task?",
+    "deleteDialogMessage": "The task <strong>“{title}”</strong> will be permanently removed. This action can't be undone."
+  },
+  "taskForm": {
+    "titleLabel": "Title",
+    "titlePlaceholder": "E.g.: Review pull request",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Task details",
+    "statusLabel": "Status",
+    "create": "Create task",
+    "save": "Save changes",
+    "created": "Task \"{title}\" created.",
+    "updated": "Task \"{title}\" updated.",
+    "saveFailed": "Failed to save: {message}",
+    "fixHighlightedFields": "Please fix the highlighted fields."
+  },
+  "notFound": {
+    "title": "Task not found",
+    "message": "The task you are looking for does not exist or has been deleted.",
+    "backToList": "Back to the list"
+  }
+}

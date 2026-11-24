@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "appName": "Gerenciador de Tarefas",
+    "description": "Desafio técnico: Next.js 15 + tRPC com armazenamento em memória.",
+    "newTask": "Nova tarefa",
+    "editTask": "Editar tarefa"
+  },
+  "header": {
+    "brand": "Gerenciador de Tarefas",
+    "home": "Gerenciador de Tarefas — ir para a lista de tarefas",
+    "newTask": "Nova tarefa",
+    "language": "Idioma: {language}"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "close": "Fechar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "deleting": "Excluindo…",
+    "retry": "Tentar novamente",
+    "loading": "Carregando…",
+    "pleaseWait": "Aguarde…",
+    "saving": "Salvando…",
+    "noDescription": "Sem descrição",
+    "createdAt": "Criada em {date}",
+    "closeNotification": "Fechar notificação"
+  },
+  "status": {
+    "not_started": "Não iniciada",
+    "in_progress": "Em andamento",
+    "done": "Concluída",
+    "changeAria": "{status} — alterar o status da tarefa {title}"
+  },
+  "errors": {
+    "titleRequired": "O título é obrigatório.",
+    "titleTooLong": "O título deve ter no máximo {max} caracteres.",
+    "descriptionTooLong": "A descrição deve ter no máximo {max} caracteres.",
+    "invalidId": "Id de tarefa inválido.",
+    "invalidStatus": "Status inválido.",
+    "taskNotFound": "Tarefa não encontrada. Ela pode ter sido excluída.",
+    "unexpected": "Erro inesperado.",
+    "somethingWentWrong": "Algo deu errado"
+  },
+  "taskList": {
+    "title": "Minhas tarefas",
+    "loading": "Carregando tarefas…",
+    "loadError": "Erro ao carregar as tarefas: {message}",
+    "empty": "Nenhuma tarefa ainda.",
+    "createFirst": "Criar a primeira tarefa",
+    "counter": "Exibindo {shown} de {total, plural, one {# tarefa} other {# tarefas}}",
+    "refreshing": " · atualizando…",
+    "viewFull": "Ver tarefa completa",
+    "viewFullAria": "Ver tarefa completa: {title}",
+    "editAria": "Editar tarefa: {title}",
+    "deleteAria": "Excluir tarefa: {title}",
+    "deletingAria": "Excluindo tarefa: {title}",
+    "loadingMore": "Carregando mais tarefas…",
+    "loadMore": "Carregar mais",
+    "endOfList": "Você chegou ao fim da lista.",
+    "statusChanged": "\"{title}\" marcada como {status}.",
+    "statusChangeFailed": "Não foi possível alterar o status: {message}",
+    "deleted": "Tarefa \"{title}\" excluída.",
+    "deleteFailed": "Não foi possível excluir a tarefa: {message}",
+    "deleteDialogTitle": "Excluir tarefa?",
+    "deleteDialogMessage": "A tarefa <strong>“{title}”</strong> será removida permanentemente. Esta ação não pode ser desfeita."
+  },
+  "taskForm": {
+    "titleLabel": "Título",
+    "titlePlaceholder": "Ex.: Revisar pull request",
+    "descriptionLabel": "Descrição (opcional)",
+    "descriptionPlaceholder": "Detalhes da tarefa",
+    "statusLabel": "Status",
+    "create": "Criar tarefa",
+    "save": "Salvar alterações",
+    "created": "Tarefa \"{title}\" criada.",
+    "updated": "Tarefa \"{title}\" atualizada.",
+    "saveFailed": "Falha ao salvar: {message}",
+    "fixHighlightedFields": "Corrija os campos destacados."
+  },
+  "notFound": {
+    "title": "Tarefa não encontrada",
+    "message": "A tarefa que você procura não existe ou foi excluída.",
+    "backToList": "Voltar para a lista"
+  }
+}

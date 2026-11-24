@@ -12,12 +12,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { formatDate } from "@/lib/format";
-import { TASK_STATUS_LABELS } from "@/lib/task-status";
 import { StatusDot } from "./status-select";
 
 /** Shows the full task (untruncated description) in a dialog. */
 export function TaskDetailsModal({ task, onClose }: { task: Task | null; onClose: () => void }) {
+  const t = useTranslations();
+  const locale = useLocale();
   return (
     <Dialog
       open={task !== null}
@@ -38,11 +40,11 @@ export function TaskDetailsModal({ task, onClose }: { task: Task | null; onClose
                 size="small"
                 variant="outlined"
                 icon={<StatusDot status={task.status} />}
-                label={TASK_STATUS_LABELS[task.status]}
+                label={t(`status.${task.status}`)}
                 sx={{ pl: 0.75 }}
               />
               <Typography variant="caption" color="text.secondary" component="time" dateTime={task.createdAt.toISOString()}>
-                Created {formatDate(task.createdAt)}
+                {t("common.createdAt", { date: formatDate(task.createdAt, locale) })}
               </Typography>
             </Stack>
             <Box
@@ -59,17 +61,17 @@ export function TaskDetailsModal({ task, onClose }: { task: Task | null; onClose
             >
               {task.description ?? (
                 <Typography component="span" sx={{ color: "text.secondary", fontStyle: "italic" }}>
-                  No description
+                  {t("common.noDescription")}
                 </Typography>
               )}
             </Box>
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2 }}>
             <Button component={Link} href={`/tasks/${task.id}/edit`} startIcon={<EditOutlinedIcon />}>
-              Edit
+              {t("common.edit")}
             </Button>
             <Button variant="contained" onClick={onClose} autoFocus>
-              Close
+              {t("common.close")}
             </Button>
           </DialogActions>
         </>

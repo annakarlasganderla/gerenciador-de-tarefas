@@ -8,6 +8,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useTranslations } from "next-intl";
 
 type Props = {
   open: boolean;
@@ -32,13 +33,14 @@ export function ConfirmDialog({
   open,
   title,
   message,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel,
+  cancelLabel,
   danger = false,
   loading = false,
   onConfirm,
   onCancel,
 }: Props) {
+  const t = useTranslations("common");
   return (
     <Dialog
       open={open}
@@ -59,7 +61,7 @@ export function ConfirmDialog({
       <DialogActions sx={{ px: 3, pb: 2 }}>
         {/* Initial focus on "Cancel": prevents confirming a destructive action with an accidental Enter. */}
         <Button onClick={onCancel} disabled={loading} autoFocus>
-          {cancelLabel}
+          {cancelLabel ?? t("cancel")}
         </Button>
         <Button
           variant="contained"
@@ -69,7 +71,7 @@ export function ConfirmDialog({
           loadingPosition="start"
           startIcon={danger ? <DeleteOutlineOutlinedIcon /> : <CheckIcon />}
         >
-          {loading ? "Please wait…" : confirmLabel}
+          {loading ? t("pleaseWait") : (confirmLabel ?? t("confirm"))}
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,0 +1,14 @@
+"use server";
+
+import { cookies } from "next/headers";
+import { isLocale, LOCALE_COOKIE } from "./config";
+
+/** Server Action: saves the chosen language in a cookie (valid for one year). */
+export async function setUserLocale(locale: string) {
+  if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
+  (await cookies()).set(LOCALE_COOKIE, locale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
+}

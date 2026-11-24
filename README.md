@@ -56,8 +56,12 @@ Extras beyond the requirements:
 - **Task status** (not started / in progress / done), changed from a status chip on each
   card with an optimistic update (`changeStatus` procedure).
 - Long descriptions are truncated to 200 characters on the list, with a dialog to read the full task.
-- Delete confirmation dialog (instead of the browser's `window.confirm`).
 - Accessible UI (see [Accessibility](#accessibility)) and automatic light/dark mode.
+- **Internationalization (i18n)** with `next-intl`: English and Portuguese (Brazil). The language
+  comes from the browser on the first visit and can be changed in the header; the choice is saved
+  in a cookie, so URLs stay the same. The API always answers in English and the front-end
+  translates known validation messages and error codes. Texts live in `front-end/src/i18n/messages/`,
+  and a test checks that both languages have the same keys.
 
 
 

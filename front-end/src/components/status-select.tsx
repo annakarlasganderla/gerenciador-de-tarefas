@@ -4,7 +4,8 @@ import { TASK_STATUSES, type TaskStatus } from "@task-manager/back-end/schemas";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import { TASK_STATUS_COLORS, TASK_STATUS_LABELS } from "@/lib/task-status";
+import { useTranslations } from "next-intl";
+import { TASK_STATUS_COLORS } from "@/lib/task-status";
 
 /** Colored dot shown next to the status label (color is never used on its own). */
 export function StatusDot({ status }: { status: TaskStatus }) {
@@ -28,6 +29,7 @@ type Props = {
 
 /** Labeled status select, used in the task form. */
 export function StatusSelect({ id, label, value, onChange, disabled, fullWidth }: Props) {
+  const t = useTranslations("status");
   return (
     <TextField
       select
@@ -43,7 +45,7 @@ export function StatusSelect({ id, label, value, onChange, disabled, fullWidth }
           renderValue: (selected) => (
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <StatusDot status={selected as TaskStatus} />
-              {TASK_STATUS_LABELS[selected as TaskStatus]}
+              {t(selected as TaskStatus)}
             </Box>
           ),
         },
@@ -52,7 +54,7 @@ export function StatusSelect({ id, label, value, onChange, disabled, fullWidth }
       {TASK_STATUSES.map((status) => (
         <MenuItem key={status} value={status} sx={{ gap: 1 }}>
           <StatusDot status={status} />
-          {TASK_STATUS_LABELS[status]}
+          {t(status)}
         </MenuItem>
       ))}
     </TextField>

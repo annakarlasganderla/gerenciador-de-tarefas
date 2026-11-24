@@ -1,13 +1,15 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { getTranslations } from "next-intl/server";
 import { BackToListButton } from "@/components/back-to-list-button";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations("notFound");
   return (
     <Box sx={{ textAlign: "center", py: 6 }}>
-      <Typography variant="h1">Task not found</Typography>
+      <Typography variant="h1">{t("title")}</Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
-        The task you are looking for does not exist or has been deleted.
+        {t("message")}
       </Typography>
       <BackToListButton />
     </Box>

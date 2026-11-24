@@ -8,8 +8,9 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
-import { TASK_STATUS_COLORS, TASK_STATUS_LABELS } from "@/lib/task-status";
+import { TASK_STATUS_COLORS } from "@/lib/task-status";
 import { StatusDot } from "./status-select";
 
 type Props = {
@@ -41,6 +42,7 @@ export function StatusMenu({ value, onChange, taskTitle, disabled }: Props) {
   const menuId = useId();
   const open = Boolean(anchor);
   const color = TASK_STATUS_COLORS[value];
+  const t = useTranslations("status");
 
   return (
     <>
@@ -54,7 +56,7 @@ export function StatusMenu({ value, onChange, taskTitle, disabled }: Props) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
-        aria-label={`${TASK_STATUS_LABELS[value]} — change status of task ${taskTitle}`}
+        aria-label={t("changeAria", { status: t(value), title: taskTitle })}
         startIcon={<StatusDot status={value} />}
         endIcon={<ArrowDropDownIcon />}
         sx={{
@@ -71,7 +73,7 @@ export function StatusMenu({ value, onChange, taskTitle, disabled }: Props) {
           "&[aria-disabled='true']": { opacity: 0.6, cursor: "progress" },
         }}
       >
-        {TASK_STATUS_LABELS[value]}
+        {t(value)}
       </Button>
       <Menu
         id={menuId}
@@ -95,7 +97,7 @@ export function StatusMenu({ value, onChange, taskTitle, disabled }: Props) {
               <ListItemIcon sx={{ minWidth: 28 }}>
                 <StatusDot status={status} />
               </ListItemIcon>
-              <ListItemText>{TASK_STATUS_LABELS[status]}</ListItemText>
+              <ListItemText>{t(status)}</ListItemText>
               {/* Visible check mark, besides the highlight color of the current item. */}
               {isCurrent && <CheckIcon fontSize="small" sx={{ ml: 2, color: "text.secondary" }} aria-hidden />}
             </MenuItem>

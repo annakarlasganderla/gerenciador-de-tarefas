@@ -1,11 +1,9 @@
 import type { TaskStatus } from "@task-manager/back-end/schemas";
 
-/** Display label of each task status. */
-export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
-  not_started: "Not started",
-  in_progress: "In progress",
-  done: "Done",
-};
+/*
+ * The display label of each status is translated: see the `status` section of
+ * the messages in src/i18n/messages/ (e.g. `t("status.in_progress")`).
+ */
 
 /**
  * Color of each status (CSS variables defined in globals.css, with dark-mode
